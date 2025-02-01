@@ -1,0 +1,9 @@
+[buck2_re_client]
+action_cache_address = $NATIVELINK_URL
+engine_address = $NATIVELINK_URL
+cas_address = $NATIVELINK_URL
+tls = false
+instance_name = main
+
+[build]
+execution_platforms = root//platforms:nativelink

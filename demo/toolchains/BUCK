@@ -1,0 +1,106 @@
+load("@nix//flake.bzl", "flake")
+load(":nix_bash_toolchain.bzl", "nix_bash_genrule_toolchain")
+load(":nix_cxx_toolchain.bzl", "nix_cxx_toolchain")
+load(":nix_python_toolchain.bzl", "nix_python_bootstrap_toolchain")
+
+#### Toolchains #############################################################
+
+nix_cxx_toolchain(
+    name = "cxx",
+    visibility = ["PUBLIC"],
+    exec_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+nix_python_bootstrap_toolchain(
+    name = "python_bootstrap",
+    visibility = ["PUBLIC"],
+    exec_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+nix_bash_genrule_toolchain(
+    name = "genrule",
+    visibility = ["PUBLIC"],
+    exec_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+#### Nix packages ##############################################################
+
+flake.package(
+    name = "stdBash",
+    binary = "bash",
+    path = "nix",
+    exec_compatible_with = ["config//platforms:runs_only_local"],
+    target_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+flake.package(
+    name = "stdEnv",
+    path = "nix",
+    visibility = ["PUBLIC"],
+    exec_compatible_with = ["config//platforms:runs_only_local"],
+    target_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+flake.package(
+    name = "bash",
+    binary = "bash",
+    path = "nix",
+    exec_compatible_with = ["config//platforms:runs_only_local"],
+    target_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+flake.package(
+    name = "nix_cxx",
+    package = "cxx",
+    path = "nix",
+    binaries = ["ar", "cc", "c++", "nm", "objcopy", "ranlib", "strip"],
+    exec_compatible_with = ["config//platforms:runs_only_local"],
+    target_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+flake.package(
+    name = "python",
+    path = "nix",
+    binary = "python",
+    exec_compatible_with = ["config//platforms:runs_only_local"],
+    target_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+flake.package(
+    name = "sed",
+    package = "gnused",
+    path = "nix",
+    binary = "sed",
+    visibility = ["PUBLIC"],
+    exec_compatible_with = ["config//platforms:runs_only_local"],
+    target_compatible_with = [
+        select({k: k for k in ["config//os:linux", "config//os:macos"]}),
+        select({k: k for k in ["config//cpu:arm64", "config//cpu:x86_64"]}),
+    ],
+)
+
+################################################################################

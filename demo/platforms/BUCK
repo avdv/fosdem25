@@ -1,0 +1,27 @@
+load("@prelude//platforms:defs.bzl", "host_configuration")
+load(":defs.bzl", "exec_platform", "exec_platforms")
+load("@prelude//platforms:defs.bzl", "host_configuration")
+
+exec_platform(
+    name = "local",
+    local_enabled = True,
+    cpu_configuration = host_configuration.cpu,
+    os_configuration = host_configuration.os,
+)
+
+exec_platform(
+    name = "linux-x86_64",
+    local_enabled = host_info().os.is_linux and host_info().arch.is_x86_64,
+    remote_enabled = True,
+    os_configuration = "config//os:linux",
+    cpu_configuration = "config//cpu:x86_64",
+    remote_execution_properties = {
+        "OSFamily": "linux",
+        "cpu_arch": "x86_64",
+    },
+)
+
+exec_platforms(
+    name = "nativelink",
+    platforms = [":linux-x86_64", ":local"],
+)
